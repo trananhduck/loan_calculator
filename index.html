@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Công cụ Tính Lãi cho Bống ❤️</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-slate-100 font-sans text-slate-800">
+    <div
+      id="app"
+      class="min-h-screen p-4 md:p-8 max-w-7xl mx-auto flex flex-col gap-6"
+    >
+      <div
+        class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mb-2"
+      >
+        <div class="relative group">
+          <div
+            class="absolute -inset-1 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full opacity-50 blur group-hover:opacity-100 transition duration-500"
+          ></div>
+          <img
+            src="avatar.png"
+            alt="Avatar Bống"
+            class="relative w-24 h-24 md:w-28 md:h-28 object-cover rounded-full border-4 border-white shadow-xl transform transition hover:scale-105 duration-300"
+          />
+          <div
+            class="absolute bottom-0 right-0 bg-white text-red-500 rounded-full p-1.5 shadow-md text-xs border border-red-100"
+          >
+            <i class="fa-solid fa-heart fa-beat"></i>
+          </div>
+        </div>
+
+        <div class="text-center md:text-left">
+          <h1 class="text-3xl md:text-4xl font-extrabold text-blue-900 mb-2">
+            Công cụ tính lãi <br class="md:hidden" />
+            cho Bống ❤️
+          </h1>
+          <div
+            class="flex items-center justify-center md:justify-start gap-2 text-slate-500 text-sm bg-white/50 py-1 px-3 rounded-full w-fit mx-auto md:mx-0 border border-slate-200"
+          >
+            <i class="fa-solid fa-circle-check text-green-500"></i>
+            <span>Cập nhật theo TB 89/TB-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+        <h2
+          class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2 border-b pb-2"
+        >
+          <span
+            class="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs"
+            >1</span
+          >
+          Thiết lập Khoản vay
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-600 mb-1"
+                >Số tiền vay (VNĐ)</label
+              >
+              <div class="relative">
+                <input
+                  type="text"
+                  :value="formatInputMoney(loanAmount)"
+                  @input="updateLoanAmount"
+                  class="w-full p-3 pl-4 border border-slate-300 rounded-xl font-bold text-blue-800 text-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                  placeholder="0"
+                />
+                <span
+                  class="absolute right-4 top-3.5 text-slate-400 text-sm font-semibold"
+                  >VNĐ</span
+                >
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-600 mb-1"
+                >Thời gian vay</label
+              >
+              <div class="flex items-center gap-2">
+                <input
+                  type="number"
+                  v-model.number="loanTerm"
+                  class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                  placeholder="60"
+                />
+                <span class="text-slate-500 font-medium whitespace-nowrap"
+                  >Tháng</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-600 mb-1"
+                >Phương án vay</label
+              >
+              <select
+                v-model="loanType"
+                class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="BDS">🏠 Bất động sản</option>
+                <option value="SXKD">🏭 Sản xuất Kinh doanh</option>
+                <option value="OTO">🚗 Vay mua Ô tô</option>
+                <option value="TIEUDUNG_TSBD">💎 Tiêu dùng thế chấp</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-600 mb-1"
+                >Xếp hạng tín dụng</label
+              >
+              <div class="grid grid-cols-3 gap-2">
+                <button
+                  @click="creditRating = 'AAA-BBB'"
+                  :class="creditRating === 'AAA-BBB' ? 'bg-green-100 border-green-500 text-green-800' : 'bg-white border-slate-200 text-slate-500'"
+                  class="p-2 border rounded-lg text-xs font-bold transition-all hover:shadow-md"
+                >
+                  (AAA-BBB)
+                </button>
+                <button
+                  @click="creditRating = 'BB-B'"
+                  :class="creditRating === 'BB-B' ? 'bg-yellow-100 border-yellow-500 text-yellow-800' : 'bg-white border-slate-200 text-slate-500'"
+                  class="p-2 border rounded-lg text-xs font-bold transition-all hover:shadow-md"
+                >
+                  (BB-B)
+                </button>
+                <button
+                  @click="creditRating = 'CCC-D'"
+                  :class="creditRating === 'CCC-D' ? 'bg-red-100 border-red-500 text-red-800' : 'bg-white border-slate-200 text-slate-500'"
+                  class="p-2 border rounded-lg text-xs font-bold transition-all hover:shadow-md"
+                >
+                  (CCC-D)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-orange-50 p-4 rounded-xl border border-orange-100">
+            <label class="block text-sm font-bold text-orange-800 mb-2">
+              <i class="fa-solid fa-clock-rotate-left mr-1"></i> Giả định Tất
+              toán
+            </label>
+            <div class="mb-3">
+              <select
+                v-model.number="prepayYear"
+                class="w-full p-2 border border-orange-200 rounded-lg text-sm focus:outline-none"
+              >
+                <option v-for="n in 10" :value="n">
+                  Trả hết vào Năm thứ {{ n }}
+                </option>
+                <option :value="11">Sau năm thứ 10</option>
+              </select>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-orange-700">Phí phạt áp dụng:</span>
+              <span
+                class="font-bold text-orange-600 bg-white px-2 py-1 rounded border border-orange-200"
+                >{{ penaltyRate }}%</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div
+          class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden group"
+        >
+          <div
+            class="absolute -right-6 -top-6 text-white opacity-10 text-9xl group-hover:scale-110 transition-transform"
+          >
+            <i class="fa-solid fa-percent"></i>
+          </div>
+          <h3
+            class="text-blue-100 text-sm font-bold uppercase tracking-wider mb-2"
+          >
+            LÃI SUẤT CHO VAY
+          </h3>
+          <div class="flex items-end gap-2 mb-4">
+            <span class="text-5xl font-extrabold tracking-tighter"
+              >{{ finalRate }}</span
+            >
+            <span class="text-xl font-medium text-blue-200 mb-2">% /năm</span>
+          </div>
+          <div
+            class="border-t border-blue-400/30 pt-3 space-y-1 text-sm text-blue-100"
+          >
+            <div class="flex justify-between">
+              <span>Lãi nền (LSTC):</span>
+              <span class="font-bold">{{ baseRate }}%</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Biên độ (Margin):</span>
+              <span class="font-bold text-yellow-300">+{{ margin }}%</span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-emerald-500 relative overflow-hidden"
+        >
+          <h3
+            class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1"
+          >
+            NGHĨA VỤ THANH TOÁN (CAO NHẤT)
+          </h3>
+          <div class="text-3xl font-bold text-slate-800 mb-1 text-emerald-700">
+            {{ formatCurrency(firstMonthPayment) }}
+          </div>
+          <p class="text-xs text-slate-400 mb-4 italic">
+            Tháng đầu tiên (Gốc + Lãi)
+          </p>
+          <div class="bg-slate-50 rounded-lg p-3">
+            <div class="flex justify-between items-center text-sm mb-1">
+              <span class="text-slate-600">Tổng lãi dự tính:</span>
+            </div>
+            <div class="font-bold text-slate-700 text-lg">
+              {{ formatCurrency(totalInterest) }}
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-orange-500"
+        >
+          <h3
+            class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1"
+          >
+            DỰ TÍNH TẤT TOÁN (NĂM {{ prepayYear }})
+          </h3>
+          <div class="flex justify-between items-end mb-2">
+            <span class="text-sm text-slate-600">Phí phạt:</span>
+            <span class="text-xl font-bold text-red-500"
+              >{{ formatCurrency(penaltyAmount) }}</span
+            >
+          </div>
+          <div class="border-t border-dashed border-slate-200 my-3"></div>
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Gốc còn lại:</span>
+              <span class="font-medium"
+                >{{ formatCurrency(remainingPrincipal) }}</span
+              >
+            </div>
+            <div
+              class="bg-orange-50 p-2 rounded flex justify-between items-center"
+            >
+              <span class="text-orange-800 text-xs font-bold uppercase"
+                >TỔNG TIỀN CẦN:</span
+              >
+              <span class="font-bold text-orange-700"
+                >{{ formatCurrency(totalPrepayAmount) }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
