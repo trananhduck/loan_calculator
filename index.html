@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Công cụ Tính Lãi cho Bống ❤️</title>
+    <title>Công cụ Tính Lãi Chính Xác MB</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
@@ -26,26 +26,20 @@
           ></div>
           <img
             src="avatar.png"
-            alt="Avatar Bống"
+            alt="Avatar"
             class="relative w-24 h-24 md:w-28 md:h-28 object-cover rounded-full border-4 border-white shadow-xl transform transition hover:scale-105 duration-300"
           />
-          <div
-            class="absolute bottom-0 right-0 bg-white text-red-500 rounded-full p-1.5 shadow-md text-xs border border-red-100"
-          >
-            <i class="fa-solid fa-heart fa-beat"></i>
-          </div>
         </div>
-
         <div class="text-center md:text-left">
           <h1 class="text-3xl md:text-4xl font-extrabold text-blue-900 mb-2">
-            Công cụ tính lãi <br class="md:hidden" />
+            Công cụ Tính Lãi <br class="md:hidden" />
             cho Bống ❤️
           </h1>
           <div
             class="flex items-center justify-center md:justify-start gap-2 text-slate-500 text-sm bg-white/50 py-1 px-3 rounded-full w-fit mx-auto md:mx-0 border border-slate-200"
           >
-            <i class="fa-solid fa-circle-check text-green-500"></i>
-            <span>Cập nhật theo TB 89/TB-</span>
+            <i class="fa-solid fa-check-double text-green-500"></i>
+            <span>Cập nhật theo TB 89/TB- (Ảnh mới nhất)</span>
           </div>
         </div>
       </div>
@@ -81,20 +75,36 @@
                 >
               </div>
             </div>
-            <div>
-              <label class="block text-sm font-semibold text-slate-600 mb-1"
-                >Thời gian vay</label
-              >
-              <div class="flex items-center gap-2">
-                <input
-                  type="number"
-                  v-model.number="loanTerm"
-                  class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                  placeholder="60"
-                />
-                <span class="text-slate-500 font-medium whitespace-nowrap"
-                  >Tháng</span
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm font-semibold text-slate-600 mb-1"
+                  >Thời gian</label
                 >
+                <div class="flex items-center gap-2">
+                  <input
+                    type="number"
+                    v-model.number="loanTerm"
+                    class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="60"
+                  />
+                  <span
+                    class="text-xs font-bold text-slate-400 absolute ml-[4.5rem] mt-1"
+                    >Tháng</span
+                  >
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-600 mb-1"
+                  >Kỳ trả lãi</label
+                >
+                <select
+                  v-model.number="paymentFreq"
+                  class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                >
+                  <option value="1">1 tháng/lần</option>
+                  <option value="3">2-3 tháng (+0.15%)</option>
+                  <option value="6">≥4 tháng (+0.25%)</option>
+                </select>
               </div>
             </div>
           </div>
@@ -124,21 +134,21 @@
                   :class="creditRating === 'AAA-BBB' ? 'bg-green-100 border-green-500 text-green-800' : 'bg-white border-slate-200 text-slate-500'"
                   class="p-2 border rounded-lg text-xs font-bold transition-all hover:shadow-md"
                 >
-                  (AAA-BBB)
+                  Tốt (A-B)
                 </button>
                 <button
                   @click="creditRating = 'BB-B'"
                   :class="creditRating === 'BB-B' ? 'bg-yellow-100 border-yellow-500 text-yellow-800' : 'bg-white border-slate-200 text-slate-500'"
                   class="p-2 border rounded-lg text-xs font-bold transition-all hover:shadow-md"
                 >
-                  (BB-B)
+                  Khá (BB)
                 </button>
                 <button
                   @click="creditRating = 'CCC-D'"
                   :class="creditRating === 'CCC-D' ? 'bg-red-100 border-red-500 text-red-800' : 'bg-white border-slate-200 text-slate-500'"
                   class="p-2 border rounded-lg text-xs font-bold transition-all hover:shadow-md"
                 >
-                  (CCC-D)
+                  Thấp (C-D)
                 </button>
               </div>
             </div>
@@ -183,7 +193,7 @@
           <h3
             class="text-blue-100 text-sm font-bold uppercase tracking-wider mb-2"
           >
-            LÃI SUẤT CHO VAY
+            Lãi suất Cho vay
           </h3>
           <div class="flex items-end gap-2 mb-4">
             <span class="text-5xl font-extrabold tracking-tighter"
@@ -194,13 +204,23 @@
           <div
             class="border-t border-blue-400/30 pt-3 space-y-1 text-sm text-blue-100"
           >
-            <div class="flex justify-between">
+            <div class="flex justify-between items-center">
               <span>Lãi nền (LSTC):</span>
-              <span class="font-bold">{{ baseRate }}%</span>
+              <div class="flex items-center gap-2">
+                <span
+                  class="bg-blue-500/30 px-2 py-0.5 rounded text-xs font-mono border border-blue-400/50"
+                  >Key {{ baseRateKey }}</span
+                >
+                <span class="font-bold">{{ baseRate }}%</span>
+              </div>
             </div>
             <div class="flex justify-between">
-              <span>Biên độ (Margin):</span>
-              <span class="font-bold text-yellow-300">+{{ margin }}%</span>
+              <span>Biên độ (Margin):</span
+              ><span class="font-bold text-yellow-300">+{{ margin }}%</span>
+            </div>
+            <div v-if="surcharge > 0" class="flex justify-between text-red-300">
+              <span>Cộng thêm (Trả thưa):</span
+              ><span class="font-bold">+{{ surcharge }}%</span>
             </div>
           </div>
         </div>
@@ -211,14 +231,12 @@
           <h3
             class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1"
           >
-            NGHĨA VỤ THANH TOÁN (CAO NHẤT)
+            Tháng đầu trả (Gốc+Lãi)
           </h3>
           <div class="text-3xl font-bold text-slate-800 mb-1 text-emerald-700">
             {{ formatCurrency(firstMonthPayment) }}
           </div>
-          <p class="text-xs text-slate-400 mb-4 italic">
-            Tháng đầu tiên (Gốc + Lãi)
-          </p>
+          <p class="text-xs text-slate-400 mb-4 italic">Dư nợ giảm dần</p>
           <div class="bg-slate-50 rounded-lg p-3">
             <div class="flex justify-between items-center text-sm mb-1">
               <span class="text-slate-600">Tổng lãi dự tính:</span>
@@ -235,7 +253,7 @@
           <h3
             class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1"
           >
-            DỰ TÍNH TẤT TOÁN (NĂM {{ prepayYear }})
+            Dự tính Tất toán (Năm {{ prepayYear }})
           </h3>
           <div class="flex justify-between items-end mb-2">
             <span class="text-sm text-slate-600">Phí phạt:</span>
@@ -246,8 +264,8 @@
           <div class="border-t border-dashed border-slate-200 my-3"></div>
           <div class="space-y-2">
             <div class="flex justify-between text-sm">
-              <span class="text-slate-500">Gốc còn lại:</span>
-              <span class="font-medium"
+              <span class="text-slate-500">Gốc còn lại:</span
+              ><span class="font-medium"
                 >{{ formatCurrency(remainingPrincipal) }}</span
               >
             </div>
@@ -265,7 +283,6 @@
         </div>
       </div>
     </div>
-
     <script src="script.js"></script>
   </body>
 </html>
