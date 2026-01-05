@@ -3,277 +3,248 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Công cụ Tính Lãi Chính Xác MB</title>
+    <title>Super Loan Calculator</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap");
+      body {
+        font-family: "Be Vietnam Pro", sans-serif;
+      }
+      .tab-active {
+        @apply bg-white text-blue-700 shadow-md;
+      }
+      .tab-inactive {
+        @apply text-slate-500 hover:bg-slate-200;
+      }
+    </style>
   </head>
-  <body class="bg-slate-100 font-sans text-slate-800">
-    <div
-      id="app"
-      class="min-h-screen p-4 md:p-8 max-w-7xl mx-auto flex flex-col gap-6"
-    >
-      <div
-        class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mb-2"
-      >
-        <div class="relative group">
-          <div
-            class="absolute -inset-1 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full opacity-50 blur group-hover:opacity-100 transition duration-500"
-          ></div>
-          <img
-            src="avatar.png"
-            alt="Avatar"
-            class="relative w-24 h-24 md:w-28 md:h-28 object-cover rounded-full border-4 border-white shadow-xl transform transition hover:scale-105 duration-300"
-          />
-        </div>
-        <div class="text-center md:text-left">
-          <h1 class="text-3xl md:text-4xl font-extrabold text-blue-900 mb-2">
-            Công cụ Tính Lãi <br class="md:hidden" />
-            cho Bống ❤️
-          </h1>
-          <div
-            class="flex items-center justify-center md:justify-start gap-2 text-slate-500 text-sm bg-white/50 py-1 px-3 rounded-full w-fit mx-auto md:mx-0 border border-slate-200"
+  <body class="bg-slate-100 min-h-screen p-4 md:p-8">
+    <div id="app" class="max-w-7xl mx-auto flex flex-col gap-6">
+      <div class="flex justify-center mb-4">
+        <div class="bg-slate-200 p-1.5 rounded-xl flex gap-1 shadow-inner">
+          <button
+            @click="currentTab = 'bank'"
+            :class="currentTab === 'bank' ? 'bg-white text-blue-700 shadow font-bold' : 'text-slate-500 hover:text-slate-700'"
+            class="px-6 py-2.5 rounded-lg transition-all duration-300 text-sm flex items-center gap-2"
           >
-            <i class="fa-solid fa-check-double text-green-500"></i>
-            <span>Cập nhật theo TB 89/TB- (Ảnh mới nhất)</span>
-          </div>
+            <i class="fa-solid fa-building-columns"></i>
+            Nghiệp vụ Ngân hàng
+          </button>
+          <button
+            @click="currentTab = 'bong'"
+            :class="currentTab === 'bong' ? 'bg-white text-pink-600 shadow font-bold' : 'text-slate-500 hover:text-slate-700'"
+            class="px-6 py-2.5 rounded-lg transition-all duration-300 text-sm flex items-center gap-2"
+          >
+            <i class="fa-solid fa-heart"></i>
+            Tính tiền hằng tháng
+          </button>
         </div>
       </div>
 
-      <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
-        <h2
-          class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2 border-b pb-2"
+      <div v-show="currentTab === 'bank'">
+        <div
+          class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mb-6"
         >
-          <span
-            class="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs"
-            >1</span
-          >
-          Thiết lập Khoản vay
-        </h2>
+          <div class="relative group">
+            <div
+              class="absolute -inset-1 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full opacity-50 blur"
+            ></div>
+            <img
+              src="avatar.png"
+              class="relative w-20 h-20 md:w-24 md:h-24 object-cover rounded-full border-4 border-white shadow-xl"
+            />
+          </div>
+          <div class="text-center md:text-left">
+            <h1 class="text-2xl md:text-3xl font-extrabold text-blue-900">
+              Công cụ tính lãi của Bống
+            </h1>
+            <p class="text-slate-500 text-sm">Theo TB 89/TB- (Ảnh mới nhất)</p>
+          </div>
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-semibold text-slate-600 mb-1"
-                >Số tiền vay (VNĐ)</label
-              >
-              <div class="relative">
+        <div
+          class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200 mb-6"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-semibold text-slate-600 mb-1"
+                  >Số tiền vay (VNĐ)</label
+                >
                 <input
                   type="text"
                   :value="formatInputMoney(loanAmount)"
                   @input="updateLoanAmount"
-                  class="w-full p-3 pl-4 border border-slate-300 rounded-xl font-bold text-blue-800 text-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                  placeholder="0"
+                  class="w-full p-3 border border-slate-300 rounded-xl font-bold text-blue-800 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
-                <span
-                  class="absolute right-4 top-3.5 text-slate-400 text-sm font-semibold"
-                  >VNĐ</span
-                >
               </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-sm font-semibold text-slate-600 mb-1"
-                  >Thời gian</label
-                >
-                <div class="flex items-center gap-2">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-sm font-semibold text-slate-600 mb-1"
+                    >Thời gian (Tháng)</label
+                  >
                   <input
                     type="number"
                     v-model.number="loanTerm"
                     class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="60"
                   />
-                  <span
-                    class="text-xs font-bold text-slate-400 absolute ml-[4.5rem] mt-1"
-                    >Tháng</span
-                  >
                 </div>
+                <div>
+                  <label class="block text-sm font-semibold text-slate-600 mb-1"
+                    >Kỳ trả lãi</label
+                  >
+                  <select
+                    v-model.number="paymentFreq"
+                    class="w-full p-3 border border-slate-300 rounded-xl outline-none text-sm"
+                  >
+                    <option value="1">1 tháng/lần</option>
+                    <option value="3">2-3 tháng (+0.15%)</option>
+                    <option value="6">≥4 tháng (+0.25%)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-semibold text-slate-600 mb-1"
+                  >Phương án vay</label
+                >
+                <select
+                  v-model="loanType"
+                  class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 outline-none"
+                >
+                  <option value="BDS">🏠 Bất động sản</option>
+                  <option value="SXKD">🏭 Sản xuất Kinh doanh</option>
+                  <option value="OTO">🚗 Vay mua Ô tô</option>
+                  <option value="TIEUDUNG_TSBD">💎 Tiêu dùng thế chấp</option>
+                </select>
               </div>
               <div>
                 <label class="block text-sm font-semibold text-slate-600 mb-1"
-                  >Kỳ trả lãi</label
+                  >Xếp hạng tín dụng</label
                 >
-                <select
-                  v-model.number="paymentFreq"
-                  class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-                >
-                  <option value="1">1 tháng/lần</option>
-                  <option value="3">2-3 tháng (+0.15%)</option>
-                  <option value="6">≥4 tháng (+0.25%)</option>
-                </select>
+                <div class="grid grid-cols-3 gap-2">
+                  <button
+                    @click="creditRating = 'AAA-BBB'"
+                    :class="creditRating === 'AAA-BBB' ? 'bg-green-100 border-green-500 text-green-800' : 'bg-white border-slate-200 text-slate-500'"
+                    class="p-2 border rounded-lg text-xs font-bold"
+                  >
+                    AAA-BBB
+                  </button>
+                  <button
+                    @click="creditRating = 'BB-B'"
+                    :class="creditRating === 'BB-B' ? 'bg-yellow-100 border-yellow-500 text-yellow-800' : 'bg-white border-slate-200 text-slate-500'"
+                    class="p-2 border rounded-lg text-xs font-bold"
+                  >
+                    BB-B
+                  </button>
+                  <button
+                    @click="creditRating = 'CCC-D'"
+                    :class="creditRating === 'CCC-D' ? 'bg-red-100 border-red-500 text-red-800' : 'bg-white border-slate-200 text-slate-500'"
+                    class="p-2 border rounded-lg text-xs font-bold"
+                  >
+                    CCC-D
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-semibold text-slate-600 mb-1"
-                >Phương án vay</label
+            <div class="bg-orange-50 p-4 rounded-xl border border-orange-100">
+              <label class="block text-sm font-bold text-orange-800 mb-2"
+                >Giả định Tất toán</label
               >
-              <select
-                v-model="loanType"
-                class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none"
-              >
-                <option value="BDS">🏠 Bất động sản</option>
-                <option value="SXKD">🏭 Sản xuất Kinh doanh</option>
-                <option value="OTO">🚗 Vay mua Ô tô</option>
-                <option value="TIEUDUNG_TSBD">💎 Tiêu dùng thế chấp</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-semibold text-slate-600 mb-1"
-                >Xếp hạng tín dụng</label
-              >
-              <div class="grid grid-cols-3 gap-2">
-                <button
-                  @click="creditRating = 'AAA-BBB'"
-                  :class="creditRating === 'AAA-BBB' ? 'bg-green-100 border-green-500 text-green-800' : 'bg-white border-slate-200 text-slate-500'"
-                  class="p-2 border rounded-lg text-xs font-bold transition-all hover:shadow-md"
-                >
-                  AAA - BBB
-                </button>
-                <button
-                  @click="creditRating = 'BB-B'"
-                  :class="creditRating === 'BB-B' ? 'bg-yellow-100 border-yellow-500 text-yellow-800' : 'bg-white border-slate-200 text-slate-500'"
-                  class="p-2 border rounded-lg text-xs font-bold transition-all hover:shadow-md"
-                >
-                  BB - B
-                </button>
-                <button
-                  @click="creditRating = 'CCC-D'"
-                  :class="creditRating === 'CCC-D' ? 'bg-red-100 border-red-500 text-red-800' : 'bg-white border-slate-200 text-slate-500'"
-                  class="p-2 border rounded-lg text-xs font-bold transition-all hover:shadow-md"
-                >
-                  CCC - D
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-orange-50 p-4 rounded-xl border border-orange-100">
-            <label class="block text-sm font-bold text-orange-800 mb-2">
-              <i class="fa-solid fa-clock-rotate-left mr-1"></i> Giả định Tất
-              toán
-            </label>
-            <div class="mb-3">
               <select
                 v-model.number="prepayYear"
-                class="w-full p-2 border border-orange-200 rounded-lg text-sm focus:outline-none"
+                class="w-full p-2 border border-orange-200 rounded-lg text-sm mb-3"
               >
-                <option v-for="n in 10" :value="n">
-                  Trả hết vào Năm thứ {{ n }}
-                </option>
+                <option v-for="n in 10" :value="n">Năm thứ {{ n }}</option>
                 <option :value="11">Sau năm thứ 10</option>
               </select>
-            </div>
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-orange-700">Phí phạt áp dụng:</span>
-              <span
-                class="font-bold text-orange-600 bg-white px-2 py-1 rounded border border-orange-200"
-                >{{ penaltyRate }}%</span
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div
-          class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden group"
-        >
-          <div
-            class="absolute -right-6 -top-6 text-white opacity-10 text-9xl group-hover:scale-110 transition-transform"
-          >
-            <i class="fa-solid fa-percent"></i>
-          </div>
-          <h3
-            class="text-blue-100 text-sm font-bold uppercase tracking-wider mb-2"
-          >
-            Lãi suất Cho vay
-          </h3>
-          <div class="flex items-end gap-2 mb-4">
-            <span class="text-5xl font-extrabold tracking-tighter"
-              >{{ finalRate }}</span
-            >
-            <span class="text-xl font-medium text-blue-200 mb-2">% /năm</span>
-          </div>
-          <div
-            class="border-t border-blue-400/30 pt-3 space-y-1 text-sm text-blue-100"
-          >
-            <div class="flex justify-between items-center">
-              <span>Lãi nền (LSTC):</span>
-              <div class="flex items-center gap-2">
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-orange-700">Phí phạt:</span>
                 <span
-                  class="bg-blue-500/30 px-2 py-0.5 rounded text-xs font-mono border border-blue-400/50"
-                  >Key {{ baseRateKey }}</span
+                  class="font-bold text-orange-600 bg-white px-2 py-1 rounded border border-orange-200"
+                  >{{ penaltyRate }}%</span
                 >
-                <span class="font-bold">{{ baseRate }}%</span>
               </div>
             </div>
-            <div class="flex justify-between">
-              <span>Biên độ (Margin):</span
-              ><span class="font-bold text-yellow-300">+{{ margin }}%</span>
-            </div>
-            <div v-if="surcharge > 0" class="flex justify-between text-red-300">
-              <span>Cộng thêm (Trả thưa):</span
-              ><span class="font-bold">+{{ surcharge }}%</span>
-            </div>
           </div>
         </div>
 
-        <div
-          class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-emerald-500 relative overflow-hidden"
-        >
-          <h3
-            class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1"
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div
+            class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden"
           >
-            Tháng đầu trả (Gốc+Lãi)
-          </h3>
-          <div class="text-3xl font-bold text-slate-800 mb-1 text-emerald-700">
-            {{ formatCurrency(firstMonthPayment) }}
-          </div>
-          <p class="text-xs text-slate-400 mb-4 italic">Dư nợ giảm dần</p>
-          <div class="bg-slate-50 rounded-lg p-3">
-            <div class="flex justify-between items-center text-sm mb-1">
-              <span class="text-slate-600">Tổng lãi dự tính:</span>
-            </div>
-            <div class="font-bold text-slate-700 text-lg">
-              {{ formatCurrency(totalInterest) }}
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-orange-500"
-        >
-          <h3
-            class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1"
-          >
-            Dự tính Tất toán (Năm {{ prepayYear }})
-          </h3>
-          <div class="flex justify-between items-end mb-2">
-            <span class="text-sm text-slate-600">Phí phạt:</span>
-            <span class="text-xl font-bold text-red-500"
-              >{{ formatCurrency(penaltyAmount) }}</span
+            <h3
+              class="text-blue-100 text-sm font-bold uppercase tracking-wider mb-2"
             >
+              Lãi suất Cho vay
+            </h3>
+            <div class="flex items-end gap-2 mb-4">
+              <span class="text-5xl font-extrabold tracking-tighter"
+                >{{ finalRate }}</span
+              >
+              <span class="text-xl font-medium text-blue-200 mb-2">% /năm</span>
+            </div>
+            <div
+              class="border-t border-blue-400/30 pt-3 space-y-1 text-sm text-blue-100"
+            >
+              <div class="flex justify-between">
+                <span>Lãi nền (Key {{ baseRateKey }}):</span
+                ><span class="font-bold">{{ baseRate }}%</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Biên độ:</span
+                ><span class="font-bold text-yellow-300">+{{ margin }}%</span>
+              </div>
+              <div
+                v-if="surcharge > 0"
+                class="flex justify-between text-red-300"
+              >
+                <span>Cộng thêm:</span><span>+{{ surcharge }}%</span>
+              </div>
+            </div>
           </div>
-          <div class="border-t border-dashed border-slate-200 my-3"></div>
-          <div class="space-y-2">
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-500">Gốc còn lại:</span
-              ><span class="font-medium"
-                >{{ formatCurrency(remainingPrincipal) }}</span
+          <div
+            class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-emerald-500"
+          >
+            <h3
+              class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1"
+            >
+              Tháng đầu trả (Gốc+Lãi)
+            </h3>
+            <div class="text-3xl font-bold text-emerald-700 mb-1">
+              {{ formatCurrency(firstMonthPayment) }}
+            </div>
+            <p class="text-xs text-slate-400">
+              Tổng lãi dự tính: {{ formatCurrency(totalInterest) }}
+            </p>
+          </div>
+          <div
+            class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-orange-500"
+          >
+            <h3
+              class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1"
+            >
+              Tất toán Năm {{ prepayYear }}
+            </h3>
+            <div class="flex justify-between text-sm mb-2">
+              <span class="text-slate-600">Phí phạt:</span
+              ><span class="font-bold text-red-500"
+                >{{ formatCurrency(penaltyAmount) }}</span
               >
             </div>
             <div
               class="bg-orange-50 p-2 rounded flex justify-between items-center"
             >
               <span class="text-orange-800 text-xs font-bold uppercase"
-                >TỔNG TIỀN CẦN:</span
+                >CẦN TRẢ:</span
               >
               <span class="font-bold text-orange-700"
                 >{{ formatCurrency(totalPrepayAmount) }}</span
@@ -282,7 +253,378 @@
           </div>
         </div>
       </div>
+
+      <div v-show="currentTab === 'bong'">
+        <div class="max-w-2xl mx-auto">
+          <div
+            class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-pink-100"
+          >
+            <div class="p-8 space-y-6">
+              <div>
+                <label class="block text-sm font-bold text-gray-600 mb-2"
+                  >Loại dư nợ của Bống</label
+                >
+                <div class="grid grid-cols-2 gap-3">
+                  <button
+                    @click="bong_loanType = 'loan'"
+                    :class="bong_loanType === 'loan' ? 'bg-blue-100 border-blue-500 text-blue-700' : 'bg-gray-50 border-gray-200 text-gray-500'"
+                    class="p-4 rounded-xl border-2 font-bold transition-all flex flex-col items-center gap-2"
+                  >
+                    <i class="fa-solid fa-sack-dollar text-2xl"></i
+                    ><span>Khoản vay (0.1%)</span>
+                  </button>
+                  <button
+                    @click="bong_loanType = 'credit'"
+                    :class="bong_loanType === 'credit' ? 'bg-purple-100 border-purple-500 text-purple-700' : 'bg-gray-50 border-gray-200 text-gray-500'"
+                    class="p-4 rounded-xl border-2 font-bold transition-all flex flex-col items-center gap-2"
+                  >
+                    <i class="fa-solid fa-credit-card text-2xl"></i
+                    ><span>Thẻ tín dụng (0.5%)</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-bold text-gray-600 mb-1"
+                    >Số tiền (VNĐ)</label
+                  >
+                  <input
+                    type="text"
+                    :value="formatInputMoney(bong_amount)"
+                    @input="updateBongAmount"
+                    class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl text-xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-bold text-gray-600 mb-1"
+                    >Thời gian vay (Tháng)</label
+                  >
+                  <div class="flex items-center gap-3">
+                    <input
+                      type="number"
+                      v-model.number="bong_months"
+                      class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl text-xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-300"
+                    />
+                    <span
+                      class="whitespace-nowrap px-4 py-2 rounded-lg text-sm font-bold border"
+                      :class="bong_isLongTerm ? 'bg-green-100 text-green-700 border-green-200' : 'bg-orange-100 text-orange-700 border-orange-200'"
+                    >
+                      {{ bong_isLongTerm ? 'Trung/Dài hạn' : 'Ngắn hạn' }}
+                    </span>
+                  </div>
+                  <p
+                    class="text-xs text-gray-400 mt-2 italic flex items-center gap-1"
+                    v-if="!bong_isLongTerm"
+                  >
+                    <i class="fa-solid fa-circle-info"></i> Dưới 1 năm chỉ cần
+                    trả Lãi hàng tháng
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="bg-slate-800 rounded-2xl p-6 text-white shadow-lg mt-4"
+              >
+                <div
+                  class="flex justify-between items-start mb-4 border-b border-slate-600 pb-4"
+                >
+                  <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">
+                      Tổng phải trả/tháng
+                    </p>
+                    <p class="text-4xl font-extrabold text-pink-400">
+                      {{ formatCurrency(bong_totalMonthly) }}
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">
+                      Lãi suất
+                    </p>
+                    <p class="text-2xl font-bold">{{ bong_rate }}%</p>
+                    <p class="text-xs text-slate-400">/tháng</p>
+                  </div>
+                </div>
+                <div class="space-y-3 text-sm">
+                  <div class="flex justify-between items-center">
+                    <span class="text-slate-300">Tiền Lãi tháng:</span>
+                    <span class="font-mono font-bold text-lg"
+                      >{{ formatCurrency(bong_monthlyInterest) }}</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-slate-300 flex items-center gap-2"
+                      >Tiền Gốc tháng:
+                      <span
+                        v-if="!bong_isLongTerm"
+                        class="text-[10px] bg-slate-600 px-1.5 rounded text-slate-300"
+                        >Miễn trả</span
+                      ></span
+                    >
+                    <span
+                      class="font-mono font-bold text-lg"
+                      :class="{'text-slate-500 line-through': !bong_isLongTerm}"
+                      >{{ formatCurrency(bong_monthlyPrincipal) }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            currentTab: "bank", // Tab mặc định là Ngân hàng
+
+            // --- DATA CỦA CODE CŨ (NGHIỆP VỤ NGÂN HÀNG) ---
+            loanType: "BDS",
+            creditRating: "AAA-BBB",
+            loanTerm: 60,
+            loanAmount: 1000000000,
+            prepayYear: 2,
+            paymentFreq: 1,
+            refRates: [
+              { max: 12, rate: 6.5, key: "68" },
+              { max: 60, rate: 7.5, key: "49" },
+              { max: 120, rate: 7.8, key: "70" },
+              { max: 9999, rate: 8.0, key: "26" },
+            ],
+            marginsData: {
+              BDS: {
+                "AAA-BBB": [
+                  { max: 12, val: 1.5 },
+                  { max: 60, val: 1.3 },
+                  { max: 120, val: 1.7 },
+                  { max: 9999, val: 1.8 },
+                ],
+                "BB-B": [
+                  { max: 12, val: 2.1 },
+                  { max: 60, val: 2.0 },
+                  { max: 120, val: 2.4 },
+                  { max: 9999, val: 2.5 },
+                ],
+                "CCC-D": [
+                  { max: 12, val: 6.7 },
+                  { max: 60, val: 7.5 },
+                  { max: 120, val: 6.9 },
+                  { max: 9999, val: 7.0 },
+                ],
+              },
+              SXKD: {
+                "AAA-BBB": [
+                  { max: 12, val: 1.0 },
+                  { max: 60, val: 0.5 },
+                  { max: 120, val: 0.9 },
+                  { max: 9999, val: 1.1 },
+                ],
+                "BB-B": [
+                  { max: 12, val: 1.5 },
+                  { max: 60, val: 1.1 },
+                  { max: 120, val: 1.6 },
+                  { max: 9999, val: 1.8 },
+                ],
+                "CCC-D": [
+                  { max: 12, val: 5.6 },
+                  { max: 60, val: 5.2 },
+                  { max: 120, val: 5.7 },
+                  { max: 9999, val: 5.9 },
+                ],
+              },
+              OTO: {
+                "AAA-BBB": [
+                  { max: 12, val: 1.6 },
+                  { max: 60, val: 1.6 },
+                  { max: 120, val: 2.0 },
+                  { max: 9999, val: 2.0 },
+                ],
+                "BB-B": [
+                  { max: 12, val: 2.1 },
+                  { max: 60, val: 2.1 },
+                  { max: 120, val: 2.5 },
+                  { max: 9999, val: 2.5 },
+                ],
+                "CCC-D": [
+                  { max: 12, val: 6.7 },
+                  { max: 60, val: 6.8 },
+                  { max: 120, val: 7.2 },
+                  { max: 9999, val: 7.2 },
+                ],
+              },
+              TIEUDUNG_TSBD: {
+                "AAA-BBB": [
+                  { max: 12, val: 2.0 },
+                  { max: 60, val: 1.9 },
+                  { max: 120, val: 2.4 },
+                  { max: 9999, val: 2.4 },
+                ],
+                "BB-B": [
+                  { max: 12, val: 2.6 },
+                  { max: 60, val: 2.6 },
+                  { max: 120, val: 3.0 },
+                  { max: 9999, val: 3.0 },
+                ],
+                "CCC-D": [
+                  { max: 12, val: 5.6 },
+                  { max: 60, val: 5.8 },
+                  { max: 120, val: 6.2 },
+                  { max: 9999, val: 6.2 },
+                ],
+              },
+            },
+
+            // --- DATA CỦA CODE MỚI (NGHIỆP VỤ BỐNG) ---
+            // Đặt tên có tiền tố bong_ để không đụng hàng
+            bong_amount: 100000000,
+            bong_months: 60,
+            bong_loanType: "loan", // 'loan' or 'credit'
+          };
+        },
+        computed: {
+          // --- COMPUTED CỦA CODE CŨ ---
+          refData() {
+            if (!this.loanTerm || this.loanTerm <= 0) return null;
+            return (
+              this.refRates.find((r) => this.loanTerm <= r.max) ||
+              this.refRates[this.refRates.length - 1]
+            );
+          },
+          baseRate() {
+            return this.refData ? this.refData.rate : 8.0;
+          },
+          baseRateKey() {
+            return this.refData ? this.refData.key : "--";
+          },
+          margin() {
+            if (!this.loanTerm || this.loanTerm <= 0) return 0;
+            const productMargins = this.marginsData[this.loanType];
+            if (!productMargins) return 0;
+            const ratingMargins = productMargins[this.creditRating];
+            if (!ratingMargins) return 0;
+            const found = ratingMargins.find((m) => this.loanTerm <= m.max);
+            return found
+              ? found.val
+              : ratingMargins[ratingMargins.length - 1].val;
+          },
+          surcharge() {
+            if (this.paymentFreq >= 4) return 0.25;
+            if (this.paymentFreq >= 2) return 0.15;
+            return 0;
+          },
+          finalRate() {
+            return parseFloat(
+              (this.baseRate + this.margin + this.surcharge).toFixed(2)
+            );
+          },
+          monthlyInterestRate() {
+            return this.finalRate / 100 / 12;
+          },
+          principalPerMonth() {
+            return this.loanTerm > 0 ? this.loanAmount / this.loanTerm : 0;
+          },
+          firstMonthPayment() {
+            const interestFirstMonth =
+              this.loanAmount * this.monthlyInterestRate;
+            return this.principalPerMonth + interestFirstMonth;
+          },
+          totalInterest() {
+            return (
+              (this.loanAmount *
+                this.monthlyInterestRate *
+                (this.loanTerm + 1)) /
+              2
+            );
+          },
+          remainingPrincipal() {
+            const monthsPassed = this.prepayYear * 12;
+            if (monthsPassed >= this.loanTerm) return 0;
+            const paidPrincipal = this.principalPerMonth * monthsPassed;
+            return Math.max(0, this.loanAmount - paidPrincipal);
+          },
+          penaltyRate() {
+            const year = this.prepayYear;
+            if (this.loanType === "BDS") {
+              if (year <= 3) return 2.5;
+              if (year === 4) return 1.5;
+              if (year === 5) return 1.0;
+              return 0;
+            }
+            if (this.loanType === "SXKD") {
+              if (year <= 1) return 0.5;
+              return 0.5;
+            }
+            if (this.loanType === "OTO") {
+              if (year <= 2) return 3.0;
+              if (year === 3) return 2.0;
+              if (year === 4) return 1.5;
+              return 0;
+            }
+            if (this.loanType === "TIEUDUNG_TSBD") {
+              if (year <= 2) return 2.5;
+              if (year === 3) return 2.0;
+              if (year === 4) return 1.5;
+              if (year === 5) return 1.0;
+              return 0;
+            }
+            return 0;
+          },
+          penaltyAmount() {
+            return this.remainingPrincipal * (this.penaltyRate / 100);
+          },
+          totalPrepayAmount() {
+            return this.remainingPrincipal + this.penaltyAmount;
+          },
+
+          // --- COMPUTED CỦA CODE MỚI (BỐNG) ---
+          bong_rate() {
+            return this.bong_loanType === "credit" ? 0.5 : 0.1;
+          },
+          bong_isLongTerm() {
+            return this.bong_months > 12;
+          },
+          bong_monthlyInterest() {
+            return this.bong_amount * (this.bong_rate / 100);
+          },
+          bong_monthlyPrincipal() {
+            if (!this.bong_isLongTerm) return 0;
+            return this.bong_amount / this.bong_months;
+          },
+          bong_totalMonthly() {
+            return this.bong_monthlyInterest + this.bong_monthlyPrincipal;
+          },
+        },
+        methods: {
+          formatCurrency(value) {
+            if (!value && value !== 0) return "0 đ";
+            return new Intl.NumberFormat("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            }).format(value);
+          },
+          formatInputMoney(value) {
+            if (!value) return "";
+            return new Intl.NumberFormat("en-US").format(value);
+          },
+          // Update cho Code cũ
+          updateLoanAmount(event) {
+            const val = event.target.value.replace(/,/g, "");
+            this.loanAmount = parseFloat(val) || 0;
+            event.target.value = this.formatInputMoney(this.loanAmount);
+          },
+          // Update cho Code mới (Bống)
+          updateBongAmount(event) {
+            const val = event.target.value.replace(/,/g, "");
+            this.bong_amount = parseFloat(val) || 0;
+            event.target.value = this.formatInputMoney(this.bong_amount);
+          },
+        },
+      }).mount("#app");
+    </script>
   </body>
 </html>
