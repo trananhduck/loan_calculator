@@ -15,12 +15,6 @@
       body {
         font-family: "Be Vietnam Pro", sans-serif;
       }
-      .tab-active {
-        @apply bg-white text-blue-700 shadow-md;
-      }
-      .tab-inactive {
-        @apply text-slate-500 hover:bg-slate-200;
-      }
     </style>
   </head>
   <body class="bg-slate-100 min-h-screen p-4 md:p-8">
@@ -109,7 +103,6 @@
                 </div>
               </div>
             </div>
-
             <div class="space-y-4">
               <div>
                 <label class="block text-sm font-semibold text-slate-600 mb-1"
@@ -154,7 +147,6 @@
                 </div>
               </div>
             </div>
-
             <div class="bg-orange-50 p-4 rounded-xl border border-orange-100">
               <label class="block text-sm font-bold text-orange-800 mb-2"
                 >Giả định Tất toán</label
@@ -296,7 +288,8 @@
                     class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl text-xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-300"
                   />
                 </div>
-                <div>
+
+                <div v-if="bong_loanType === 'loan'">
                   <label class="block text-sm font-bold text-gray-600 mb-1"
                     >Thời gian vay (Tháng)</label
                   >
@@ -320,6 +313,14 @@
                     <i class="fa-solid fa-circle-info"></i> Dưới 1 năm chỉ cần
                     trả Lãi hàng tháng
                   </p>
+                </div>
+
+                <div
+                  v-if="bong_loanType === 'credit'"
+                  class="text-sm text-purple-600 bg-purple-50 p-3 rounded-xl border border-purple-100 flex gap-2 items-center"
+                >
+                  <i class="fa-solid fa-circle-info"></i>
+                  <span>Thẻ tín dụng không tính trả gốc hàng tháng</span>
                 </div>
               </div>
 
@@ -353,19 +354,20 @@
                     >
                   </div>
                   <div class="flex justify-between items-center">
-                    <span class="text-slate-300 flex items-center gap-2"
-                      >Tiền Gốc tháng:
+                    <span class="text-slate-300 flex items-center gap-2">
+                      Tiền Gốc tháng:
                       <span
-                        v-if="!bong_isLongTerm"
+                        v-if="!bong_isLongTerm || bong_loanType === 'credit'"
                         class="text-[10px] bg-slate-600 px-1.5 rounded text-slate-300"
                         >Miễn trả</span
-                      ></span
-                    >
+                      >
+                    </span>
                     <span
                       class="font-mono font-bold text-lg"
-                      :class="{'text-slate-500 line-through': !bong_isLongTerm}"
-                      >{{ formatCurrency(bong_monthlyPrincipal) }}</span
+                      :class="{'text-slate-500 line-through': !bong_isLongTerm || bong_loanType === 'credit'}"
                     >
+                      {{ formatCurrency(bong_monthlyPrincipal) }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -381,9 +383,8 @@
       createApp({
         data() {
           return {
-            currentTab: "bank", // Tab mặc định là Ngân hàng
-
-            // --- DATA CỦA CODE CŨ (NGHIỆP VỤ NGÂN HÀNG) ---
+            currentTab: "bank",
+            // --- DATA CỦA CODE CŨ ---
             loanType: "BDS",
             creditRating: "AAA-BBB",
             loanTerm: 60,
@@ -478,12 +479,10 @@
                 ],
               },
             },
-
-            // --- DATA CỦA CODE MỚI (NGHIỆP VỤ BỐNG) ---
-            // Đặt tên có tiền tố bong_ để không đụng hàng
+            // --- DATA CỦA CODE MỚI (BỐNG) ---
             bong_amount: 100000000,
             bong_months: 60,
-            bong_loanType: "loan", // 'loan' or 'credit'
+            bong_loanType: "loan",
           };
         },
         computed: {
@@ -592,7 +591,13 @@
             return this.bong_amount * (this.bong_rate / 100);
           },
           bong_monthlyPrincipal() {
+            // NẾU LÀ THẺ TÍN DỤNG -> GỐC = 0
+            if (this.bong_loanType === "credit") return 0;
+
+            // NẾU LÀ KHOẢN VAY NHƯNG NGẮN HẠN -> GỐC = 0
             if (!this.bong_isLongTerm) return 0;
+
+            // CÒN LẠI (VAY DÀI HẠN) -> GỐC = TIỀN / THÁNG
             return this.bong_amount / this.bong_months;
           },
           bong_totalMonthly() {
@@ -611,13 +616,11 @@
             if (!value) return "";
             return new Intl.NumberFormat("en-US").format(value);
           },
-          // Update cho Code cũ
           updateLoanAmount(event) {
             const val = event.target.value.replace(/,/g, "");
             this.loanAmount = parseFloat(val) || 0;
             event.target.value = this.formatInputMoney(this.loanAmount);
           },
-          // Update cho Code mới (Bống)
           updateBongAmount(event) {
             const val = event.target.value.replace(/,/g, "");
             this.bong_amount = parseFloat(val) || 0;
